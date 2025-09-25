@@ -10,8 +10,9 @@ import time
 import webbrowser
 from dateutil.relativedelta import relativedelta
 
+
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'wekjfbk124679--12-0'
 
 TASKS_FILE = 'tasks.json'
 BIRTHDAYS_FILE = 'birthdays.json'
@@ -192,42 +193,46 @@ def load_schedule():
     for event in all_events:
         new_event = event.copy()
 
-        event_date_str = event.get('start')
-        if not event_date_str:
+        event_date_start_str = event.get('start')
+        if not event_date_start_str:
             continue
         try:
-            event_date = datetime.strptime(event_date_str, '%d.%m.%Y %H:%M')
+            event_date_start = datetime.strptime(event_date_start_str, '%d.%m.%Y %H:%M')
         except ValueError:
             continue
-        new_date = event_date + timedelta(weeks=1)
-        new_date_str = new_date.strftime('%d.%m.%Y %H:%M')
-        new_event['start'] = new_date_str
 
-        event_date_str = event.get('end')
-        if not event_date_str:
+        event_date_end_str = event.get('end')
+        if not event_date_end_str:
             continue
         try:
-            event_date = datetime.strptime(event_date_str, '%d.%m.%Y %H:%M')
+            event_date_end = datetime.strptime(event_date_end_str, '%d.%m.%Y %H:%M')
         except ValueError:
             continue
-        new_date = event_date + timedelta(weeks=1)
-        new_date_str = new_date.strftime('%d.%m.%Y %H:%M')
-        new_event['end'] = new_date_str
 
-        now = datetime.now()
-        weekday = now.weekday()
-        start_of_week = now - timedelta(days=weekday)
-        start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
-        end_of_week = start_of_week + timedelta(days=6, hours=23, minutes=59, seconds=59, microseconds=999999)
+        for week in range(1, 54):
+            new_date_start = event_date_start + timedelta(weeks=week)
+            new_date_start_str = new_date_start.strftime('%d.%m.%Y %H:%M')
+            new_event['start'] = new_date_start_str
+
         
-        if start_of_week <= new_date <= end_of_week:
-            events.append(new_event)
-            all_events.append(new_event)
-        if new_date <= end_of_week:
-            all_events.append(new_event)
+            new_date_end = event_date_end + timedelta(weeks=week)
+            new_date_str = new_date_end.strftime('%d.%m.%Y %H:%M')
+            new_event['end'] = new_date_str
+
+            now = datetime.now()
+            weekday = now.weekday()
+            start_of_week = now - timedelta(days=weekday)
+            start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+            end_of_week = start_of_week + timedelta(days=6, hours=23, minutes=59, seconds=59, microseconds=999999)
+
+            end_of_week += timedelta(weeks=1)
+
+        
+            if start_of_week <= new_date_end <= end_of_week:
+                events.append(new_event.copy())
     
     # delete before this
-
+    print(events)
     return events
 
 def check_upcoming_events():
