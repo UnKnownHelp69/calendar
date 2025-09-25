@@ -900,6 +900,8 @@ def create_template():
                     <input type="text" name="date" id="mark-date" placeholder="ДД.ММ.ГГГГ" required>
                     <input type="text" name="text" placeholder="Текст метки" required>
                     <div style="display: flex; align-items: center;">
+                        <div style="flex: 1;">
+                        </div>
                         <button type="button" class="today-btn" onclick="setToday('mark-date')">Сегодня</button>
                     </div>
                     <button type="submit">Добавить</button>
