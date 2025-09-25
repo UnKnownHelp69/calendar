@@ -171,11 +171,6 @@ def load_schedule():
         print(f"Ошибка загрузки расписания: {e}")
         import traceback
         traceback.print_exc()
-    
-
-    #!!! delete ths code lower, before "return events" if u dont want to use innohassle schedule
-
-    # delete from this 
 
     all_events = []
 
@@ -253,8 +248,7 @@ def load_schedule():
         
             if start_of_week <= new_date_end <= end_of_week:
                 events.append(new_event.copy())
-    
-    # delete until this
+
     return events
 
 def check_upcoming_events():
