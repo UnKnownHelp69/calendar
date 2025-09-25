@@ -765,7 +765,6 @@ def create_template():
                         <input type="text" name="deadline" id="deadline" placeholder="ДД.ММ.ГГГГ" required style="flex: 1;">
                         <button type="button" class="today-btn" onclick="setToday('deadline')">Сегодня</button>
                     </div>
-                    <div class="date-hint">Формат: ДД.ММ.ГГГГ (например, 25.12.2024)</div>
                     <button type="submit">Добавить задачу</button>
                 </form>
                 
@@ -792,7 +791,6 @@ def create_template():
                 <form action="{{ url_for('add_birthday') }}" method="post">
                     <input type="text" name="date" id="birthday-date" placeholder="ДД.ММ" required>
                     <input type="text" name="name" placeholder="Имя" required>
-                    <div class="date-hint">Формат: ДД.ММ (например, 25.12)</div>
                     <button type="submit">Добавить</button>
                 </form>
                 
@@ -826,7 +824,6 @@ def create_template():
                     <input type="text" name="text" placeholder="Текст метки" required>
                     <div style="display: flex; align-items: center;">
                         <div style="flex: 1;">
-                            <div class="date-hint">Формат: ДД.ММ.ГГГГ (например, 25.12.2024)</div>
                         </div>
                         <button type="button" class="today-btn" onclick="setToday('mark-date')">Сегодня</button>
                     </div>
