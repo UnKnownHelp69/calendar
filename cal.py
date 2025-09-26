@@ -12,7 +12,7 @@ from dateutil.relativedelta import relativedelta
 
 
 app = Flask(__name__)
-app.secret_key = 'your_key'
+app.secret_key = 'wekjfbk124679--12-0'
 
 TASKS_FILE = 'tasks.json'
 BIRTHDAYS_FILE = 'birthdays.json'
@@ -78,7 +78,7 @@ def load_schedule():
     
     events = []
     try:
-        url = "your_url"
+        url = "https://api.innohassle.ru/events/v0/fall25-b25-mfai-04.ics?user_id=424676&export_type=url"
         response = requests.get(url, timeout=30)
         calendar = Calendar.from_ical(response.content)
         
@@ -86,11 +86,11 @@ def load_schedule():
         start_date = now - relativedelta(months=2)
         end_date = now + relativedelta(years=1)
         
-        print(f"Загрузка событий с {start_date.strftime('%d.%m.%Y')} по {end_date.strftime('%d.%m.%Y')}")
+        print(f"Download events from {start_date.strftime('%d.%m.%Y')} по {end_date.strftime('%d.%m.%Y')}")
         
         for component in calendar.walk():
             if component.name == "VEVENT":
-                summary = str(component.get('summary', 'Без названия'))
+                summary = str(component.get('summary', 'without name'))
                 description = str(component.get('description', ''))
                 location = str(component.get('location', ''))
                 
@@ -144,7 +144,7 @@ def load_schedule():
                                 'is_recurring': True
                             })
                     except Exception as e:
-                        print(f"Ошибка обработки повторяющегося события: {e}")
+                        print(f"Error of processing repeating event: {e}")
                         events.append({
                             'start': start_str,
                             'end': end_str,
@@ -163,12 +163,12 @@ def load_schedule():
                         'is_recurring': False
                     })
         
-        print(f"Загружено {len(events)} событий")
+        print(f"Download {len(events)} events")
         cached_events = events
         last_cache_update = datetime.now()
         
     except Exception as e:
-        print(f"Ошибка загрузки расписания: {e}")
+        print(f"Error of download schedule: {e}")
         import traceback
         traceback.print_exc()
 
@@ -191,7 +191,7 @@ def check_upcoming_events():
                         if 0 <= days_until <= 3:
                             new_notifications.append({
                                 'type': 'task',
-                                'message': f'Задача "{task["description"]}" должна быть выполнена через {days_until} дн.',
+                                'message': f'Task "{task["description"]}" must be completed in {days_until} d.',
                                 'date': task['deadline']
                             })
                     except:
@@ -205,7 +205,7 @@ def check_upcoming_events():
                     if event_date == tomorrow:
                         new_notifications.append({
                             'type': 'event',
-                            'message': f'Завтра событие: {event["summary"]}',
+                            'message': f'Tomorrow will be: {event["summary"]}',
                             'date': event_date_str
                         })
                 except:
@@ -223,19 +223,19 @@ def check_upcoming_events():
                         if i == 0:
                             new_notifications.append({
                                 'type': 'birthday',
-                                'message': f'Сегодня день рождения у {name}!',
+                                'message': f'Today {name} celebrates birthday!',
                                 'date': check_date.strftime('%d.%m.%Y')
                             })
                         else:
                             new_notifications.append({
                                 'type': 'birthday',
-                                'message': f'Через {i} дн. день рождения у {name}',
+                                'message': f'{name} will cepebrate birthday in {i} d.',
                                 'date': check_date.strftime('%d.%m.%Y')
                             })
             
             notifications = new_notifications
         except Exception as e:
-            print(f"Ошибка в проверке уведомлений: {e}")
+            print(f"Error of checking notifications: {e}")
         
         time.sleep(3600)
 
@@ -298,7 +298,7 @@ def index():
         week_days.append({
             'date': day_date,
             'date_str': day_date.strftime('%d.%m.%Y'),
-            'day_name': ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'][i],
+            'day_name': ['Mn', 'Tu', 'We', 'Th', 'Fr', 'Sat', 'Sun'][i],
             'events': day_events,
             'birthdays': day_birthdays,
             'marks': day_marks
@@ -339,7 +339,7 @@ def add_task():
         try:
             datetime.strptime(deadline, '%d.%m.%Y')
         except ValueError:
-            return "Неверный формат даты. Используйте ДД.ММ.ГГГГ", 400
+            return "Wrong data format. Use DD.MM.YYYY", 400
         
         tasks, birthdays, marks = load_data()
         task_id = max([t.get('id', 0) for t in tasks]) + 1 if tasks else 1
@@ -381,7 +381,7 @@ def add_birthday():
         try:
             datetime.strptime(date + '.2000', '%d.%m.%Y')
         except ValueError:
-            return "Неверный формат даты. Используйте ДД.ММ", 400
+            return "Wrong data format. Use DD.MM", 400
         
         tasks, birthdays, marks = load_data()
         if date in birthdays:
@@ -435,7 +435,7 @@ def add_mark():
         try:
             datetime.strptime(date, '%d.%m.%Y')
         except ValueError:
-            return "Неверный формат даты. Используйте ДД.ММ.ГГГГ", 400
+            return "Wrong data format. Use DD.MM.YYYY", 400
         
         tasks, birthdays, marks = load_data()
         if date in marks:
@@ -501,7 +501,7 @@ def create_template():
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Календарь с задачами</title>
+    <title>Calendar with tasks</title>
     <meta charset="UTF-8">
     <style>
         :root {
@@ -715,57 +715,57 @@ def create_template():
 </head>
 <body>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1>Календарь с задачами</h1>
-        <a href="{{ url_for('refresh_schedule') }}"><button class="refresh-btn">🔄 Обновить расписание</button></a>
+        <h1>Calendar with tasks</h1>
+        <a href="{{ url_for('refresh_schedule') }}"><button class="refresh-btn">🔄 Reload schedule</button></a>
     </div>
     
     <div class="week-nav">
         <div>
             <form action="{{ url_for('prev_week') }}" method="post" style="display: inline;">
-                <button type="submit">← Предыдущая неделя</button>
+                <button type="submit">← Last week</button>
             </form>
             <form action="{{ url_for('current_week') }}" method="post" style="display: inline;">
-                <button type="submit">Текущая неделя</button>
+                <button type="submit">This week</button>
             </form>
             <form action="{{ url_for('next_week') }}" method="post" style="display: inline;">
-                <button type="submit">Следующая неделя →</button>
+                <button type="submit">Next week →</button>
             </form>
         </div>
         <div class="week-title">
             {% if week_offset == 0 %}
-                Текущая неделя
+                This week
             {% elif week_offset > 0 %}
-                Через {{ week_offset }} недель(и)
+                After {{ week_offset }} week(s)
             {% else %}
-                {{ -week_offset }} недель(и) назад
+                {{ -week_offset }} week(s) before
             {% endif %}
         </div>
     </div>
     
     {% if notifications %}
     <div class="notifications card">
-        <h3>🔔 Уведомления</h3>
+        <h3>🔔 Notifications</h3>
         {% for notification in notifications %}
         <div class="notification">
             {{ notification.message }}
         </div>
         {% endfor %}
-        <a href="{{ url_for('clear_notifications') }}"><button class="clear-notifications">Очистить уведомления</button></a>
+        <a href="{{ url_for('clear_notifications') }}"><button class="clear-notifications">Clean notifications</button></a>
     </div>
     {% endif %}
     
     <div class="container">
         <div class="sidebar">
             <div class="card">
-                <h2>Задачи</h2>
+                <h2>Tasks</h2>
                 
                 <form action="{{ url_for('add_task') }}" method="post">
-                    <input type="text" name="description" placeholder="Описание задачи" required>
+                    <input type="text" name="description" placeholder="Task description" required>
                     <div style="display: flex; align-items: center;">
-                        <input type="text" name="deadline" id="deadline" placeholder="ДД.ММ.ГГГГ" required style="flex: 1;">
-                        <button type="button" class="today-btn" onclick="setToday('deadline')">Сегодня</button>
+                        <input type="text" name="deadline" id="deadline" placeholder="DD.MM.YYYY" required style="flex: 1;">
+                        <button type="button" class="today-btn" onclick="setToday('deadline')">Today</button>
                     </div>
-                    <button type="submit">Добавить задачу</button>
+                    <button type="submit">Add task</button>
                 </form>
                 
                 <div id="task-list">
@@ -775,30 +775,30 @@ def create_template():
                             {{ task.deadline }} - {{ task.description }}
                         </span>
                         <div class="task-actions">
-                            <a href="{{ url_for('delete_task', task_id=task.id) }}" onclick="return confirm('Удалить задачу?')">
+                            <a href="{{ url_for('delete_task', task_id=task.id) }}" onclick="return confirm('Delete tag?')">
                                 <button class="delete-btn">✕</button>
                             </a>
                         </div>
                     </div>
                     {% else %}
-                    <div class="empty-message">Нет задач</div>
+                    <div class="empty-message">No tasks</div>
                     {% endfor %}
                 </div>
             </div>
             
             <div class="card">
-                <h3>Дни рождения</h3>
+                <h3>Birthdays</h3>
                 <form action="{{ url_for('add_birthday') }}" method="post">
-                    <input type="text" name="date" id="birthday-date" placeholder="ДД.ММ" required>
-                    <input type="text" name="name" placeholder="Имя" required>
-                    <button type="submit">Добавить</button>
+                    <input type="text" name="date" id="birthday-date" placeholder="DD.MM" required>
+                    <input type="text" name="name" placeholder="Name" required>
+                    <button type="submit">Add</button>
                 </form>
                 
                 {% for bd_date, names in birthdays.items() %}
                     {% if names is string %}
                     <div class="birthday-item">
                         <span>{{ bd_date }} - {{ names }}</span>
-                        <a href="{{ url_for('delete_birthday', date=bd_date) }}" onclick="return confirm('Удалить день рождения?')">
+                        <a href="{{ url_for('delete_birthday', date=bd_date) }}" onclick="return confirm('Do you want to delete birthday?')">
                             <button class="delete-btn">✕</button>
                         </a>
                     </div>
@@ -806,35 +806,35 @@ def create_template():
                         {% for name in names %}
                         <div class="birthday-item multiple-items">
                             <span>{{ bd_date }} - {{ name }}</span>
-                            <a href="{{ url_for('delete_specific_birthday', date=bd_date, name=name) }}" onclick="return confirm('Удалить день рождения?')">
+                            <a href="{{ url_for('delete_specific_birthday', date=bd_date, name=name) }}" onclick="return confirm('Do you want to delete birthday?')">
                                 <button class="delete-btn">✕</button>
                             </a>
                         </div>
                         {% endfor %}
                     {% endif %}
                 {% else %}
-                <div class="empty-message">Нет дней рождения</div>
+                <div class="empty-message">No birthdays</div>
                 {% endfor %}
             </div>
             
             <div class="card">
-                <h3>Метки</h3>
+                <h3>Tags</h3>
                 <form action="{{ url_for('add_mark') }}" method="post">
-                    <input type="text" name="date" id="mark-date" placeholder="ДД.ММ.ГГГГ" required>
-                    <input type="text" name="text" placeholder="Текст метки" required>
+                    <input type="text" name="date" id="mark-date" placeholder="DD.MM.YYYY" required>
+                    <input type="text" name="text" placeholder="Tags text" required>
                     <div style="display: flex; align-items: center;">
                         <div style="flex: 1;">
                         </div>
-                        <button type="button" class="today-btn" onclick="setToday('mark-date')">Сегодня</button>
+                        <button type="button" class="today-btn" onclick="setToday('mark-date')">Today</button>
                     </div>
-                    <button type="submit">Добавить</button>
+                    <button type="submit">Add</button>
                 </form>
                 
                 {% for mark_date, texts in marks.items() %}
                     {% if texts is string %}
                     <div class="mark-item">
                         <span>{{ mark_date }} - {{ texts }}</span>
-                        <a href="{{ url_for('delete_mark', date=mark_date) }}" onclick="return confirm('Удалить метку?')">
+                        <a href="{{ url_for('delete_mark', date=mark_date) }}" onclick="return confirm('Delete tag?')">
                             <button class="delete-btn">✕</button>
                         </a>
                     </div>
@@ -842,26 +842,26 @@ def create_template():
                         {% for text in texts %}
                         <div class="mark-item multiple-items">
                             <span>{{ mark_date }} - {{ text }}</span>
-                            <a href="{{ url_for('delete_specific_mark', date=mark_date, text=text) }}" onclick="return confirm('Удалить метку?')">
+                            <a href="{{ url_for('delete_specific_mark', date=mark_date, text=text) }}" onclick="return confirm('Delete tag?')">
                                 <button class="delete-btn">✕</button>
                             </a>
                         </div>
                         {% endfor %}
                     {% endif %}
                 {% else %}
-                <div class="empty-message">Нет меток</div>
+                <div class="empty-message">No tags</div>
                 {% endfor %}
             </div>
         </div>
         
         <div class="calendar">
-            <h2>Расписание на неделю</h2>
+            <h2>Week schedule</h2>
             {% for day in week_days %}
             <div class="day">
                 <div class="day-header">
                     {{ day.date_str }} ({{ day.day_name }}) 
                     {% if day.date_str == today %} 
-                        <span style="color: var(--secondary-color);">- СЕГОДНЯ</span> 
+                        <span style="color: var(--secondary-color);">- TODAY</span> 
                     {% endif %}
                 </div>
                 
@@ -873,13 +873,13 @@ def create_template():
                     <br><small>📍 {{ event.location }}</small>
                     {% endif %}
                     {% if event.is_recurring %}
-                    <br><small>🔄 Повторяющееся событие</small>
+                    <br><small>🔄 Repeating event</small>
                     {% endif %}
                 </div>
                 {% endfor %}
                 
                 {% for birthday in day.birthdays %}
-                <div class="event">🎂 {{ birthday.name }} (день рождения)</div>
+                <div class="event">🎂 {{ birthday.name }} (birthday)</div>
                 {% endfor %}
                 
                 {% for mark in day.marks %}
@@ -887,7 +887,7 @@ def create_template():
                 {% endfor %}
                 
                 {% if not day.events and not day.birthdays and not day.marks %}
-                <div class="empty-message">Нет событий</div>
+                <div class="empty-message">No events</div>
                 {% endif %}
             </div>
             {% endfor %}
