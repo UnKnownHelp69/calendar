@@ -12,7 +12,7 @@ from dateutil.relativedelta import relativedelta
 
 
 app = Flask(__name__)
-app.secret_key = 'wekjfbk124679--12-0'
+app.secret_key = 'your_code'
 
 TASKS_FILE = 'tasks.json'
 BIRTHDAYS_FILE = 'birthdays.json'
@@ -78,7 +78,7 @@ def load_schedule():
     
     events = []
     try:
-        url = "https://api.innohassle.ru/events/v0/fall25-b25-mfai-04.ics?user_id=424676&export_type=url"
+        url = "your_url"
         response = requests.get(url, timeout=30)
         calendar = Calendar.from_ical(response.content)
         
